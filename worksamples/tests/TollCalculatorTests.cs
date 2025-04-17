@@ -1,6 +1,4 @@
-﻿using TollFeeCalculator;
-
-namespace TollCalculator.Tests;
+﻿namespace TollCalculator.Tests;
 
 public class TollCalculatorTests
 {
@@ -30,7 +28,7 @@ public class TollCalculatorTests
     {
         //Arrange
         var car = new Car();
-        var sut = new TollFeeCalculator.TollCalculator();
+        var sut = new TollCalculator();
         var passageTime = TodayAt(hour, minute);
         
         //Act
