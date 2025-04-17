@@ -1,7 +1,6 @@
-﻿namespace TollCalculator
+﻿namespace TollCalculator;
+
+public interface IVehicle
 {
-    public interface IVehicle
-    {
-        string GetVehicleType();
-    }
+    string GetVehicleType();
 }

@@ -28,7 +28,7 @@ public class TollCalculatorTests
     {
         //Arrange
         var car = new Car();
-        var sut = new TollCalculator(new NoFreeDatesProvider());
+        var sut = new TollCalculator(new NoFreeDatesProvider(), new TollFreeVehicleProvider());
         var passageTime = TodayAt(hour, minute);
         
         //Act
@@ -50,7 +50,7 @@ public class TollCalculatorTests
     {
         //Arrange
         var car = new Car();
-        var sut = new TollCalculator(new OnlyFreeDatesProvider());
+        var sut = new TollCalculator(new OnlyFreeDatesProvider(), new TollFreeVehicleProvider());
         var passageTime = TodayAt(hour, minute);
         
         //Act
