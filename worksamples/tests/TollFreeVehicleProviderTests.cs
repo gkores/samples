@@ -1,3 +1,6 @@
+using TollCalculator.Providers;
+using TollCalculator.Vehicles;
+
 namespace TollCalculator.Tests;
 
 public class TollFreeVehicleProviderTests

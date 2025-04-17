@@ -1,3 +1,5 @@
+using TollCalculator.Providers;
+
 namespace TollCalculator.Tests;
 
 public class TollFreeDatesProviderTests

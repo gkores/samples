@@ -1,4 +1,6 @@
-namespace TollCalculator;
+using TollCalculator.Vehicles;
+
+namespace TollCalculator.Providers;
 
 public class TollFreeVehicleProvider: ITollFreeVehicleProvider
 {
