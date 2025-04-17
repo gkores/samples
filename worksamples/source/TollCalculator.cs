@@ -38,10 +38,8 @@ public class TollCalculator
             int nextFee = _tollFeeProvider.GetTollFee(date);
             int tempFee = _tollFeeProvider.GetTollFee(intervalStart);
 
-            long diffInMillies = date.Millisecond - intervalStart.Millisecond;
-            long minutes = diffInMillies/1000/60;
-
-            if (minutes <= 60)
+            var diffInMinutes = (date - intervalStart).TotalMinutes;
+            if (diffInMinutes <= 60.0)
             {
                 if (totalFee > 0) totalFee -= tempFee;
                 if (nextFee >= tempFee) tempFee = nextFee;
@@ -54,22 +52,5 @@ public class TollCalculator
         }
         if (totalFee > 60) totalFee = 60;
         return totalFee;
-    }
-
-    public int GetTollFee(DateTime date, IVehicle vehicle)
-    {
-        int hour = date.Hour;
-        int minute = date.Minute;
-
-        if (hour == 6 && minute >= 0 && minute <= 29) return 8;
-        else if (hour == 6 && minute >= 30 && minute <= 59) return 13;
-        else if (hour == 7 && minute >= 0 && minute <= 59) return 18;
-        else if (hour == 8 && minute >= 0 && minute <= 29) return 13;
-        else if (hour >= 8 && hour <= 14 && minute >= 30 && minute <= 59) return 8;
-        else if (hour == 15 && minute >= 0 && minute <= 29) return 13;
-        else if (hour == 15 && minute >= 0 || hour == 16 && minute <= 59) return 18;
-        else if (hour == 17 && minute >= 0 && minute <= 59) return 13;
-        else if (hour == 18 && minute >= 0 && minute <= 29) return 8;
-        else return 0;
     }
 }
