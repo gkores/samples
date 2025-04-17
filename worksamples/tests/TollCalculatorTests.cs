@@ -31,7 +31,7 @@ public class TollCalculatorTests
     {
         //Arrange
         var vehicle = new Car();
-        var sut = new TollCalculator(new NoFreeDatesProvider(), new NoFreeVehiclesProvider());
+        var sut = new TollCalculator(new NoFreeDatesProvider(), new NoFreeVehiclesProvider(), new TollFeeProvider());
         var passageTime = TodayAt(hour, minute);
         
         //Act
@@ -53,7 +53,7 @@ public class TollCalculatorTests
     {
         //Arrange
         var vehicle = new Car();
-        var sut = new TollCalculator(new OnlyFreeDatesProvider(), new NoFreeVehiclesProvider());
+        var sut = new TollCalculator(new OnlyFreeDatesProvider(), new NoFreeVehiclesProvider(), new TollFeeProvider());
         var passageTime = TodayAt(hour, minute);
         
         //Act
@@ -68,7 +68,7 @@ public class TollCalculatorTests
     {
         //Arrange
         var vehicle = new Car();
-        var sut = new TollCalculator(new NoFreeDatesProvider(), new NoFreeVehiclesProvider());
+        var sut = new TollCalculator(new NoFreeDatesProvider(), new NoFreeVehiclesProvider(), new TollFeeProvider());
         DateTime[] passageTimes = [TodayAt(6, 30), TodayAt(7, 50), TodayAt(15, 0), TodayAt(16, 10), TodayAt(17, 20), TodayAt(18, 25)];
         
         //Act
@@ -83,7 +83,7 @@ public class TollCalculatorTests
     {
         //Arrange
         var vehicle = new Car();
-        var sut = new TollCalculator(new NoFreeDatesProvider(), new NoFreeVehiclesProvider());
+        var sut = new TollCalculator(new NoFreeDatesProvider(), new NoFreeVehiclesProvider(), new TollFeeProvider());
         DateTime[] passageTimes = [TodayAt(6, 29), TodayAt(6, 50), TodayAt(7, 19)];
         
         //Act

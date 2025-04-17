@@ -7,11 +7,13 @@ public class TollCalculator
 {
     private readonly ITollFreeDateProvider _tollFreeDateProvider;
     private readonly ITollFreeVehicleProvider _tollFreeVehicleProvider;
+    private readonly ITollFeeProvider _tollFeeProvider;
 
-    public TollCalculator(ITollFreeDateProvider tollFreeDateProvider, ITollFreeVehicleProvider tollFreeVehicleProvider)
+    public TollCalculator(ITollFreeDateProvider tollFreeDateProvider, ITollFreeVehicleProvider tollFreeVehicleProvider, ITollFeeProvider tollFeeProvider)
     {
         _tollFreeDateProvider = tollFreeDateProvider;
         _tollFreeVehicleProvider = tollFreeVehicleProvider;
+        _tollFeeProvider = tollFeeProvider;
     }
 
     /**
@@ -24,12 +26,17 @@ public class TollCalculator
 
     public int GetTollFee(IVehicle vehicle, DateTime[] dates)
     {
+        // Assuming that the all entries are within the same day, and that the entries are in order
         DateTime intervalStart = dates[0];
+
+        if (_tollFreeVehicleProvider.IsTollFreeVehicle(vehicle)) return 0;
+        if (_tollFreeDateProvider.IsTollFreeDate(intervalStart)) return 0;
+        
         int totalFee = 0;
         foreach (DateTime date in dates)
         {
-            int nextFee = GetTollFee(date, vehicle);
-            int tempFee = GetTollFee(intervalStart, vehicle);
+            int nextFee = _tollFeeProvider.GetTollFee(date);
+            int tempFee = _tollFeeProvider.GetTollFee(intervalStart);
 
             long diffInMillies = date.Millisecond - intervalStart.Millisecond;
             long minutes = diffInMillies/1000/60;
@@ -51,8 +58,6 @@ public class TollCalculator
 
     public int GetTollFee(DateTime date, IVehicle vehicle)
     {
-        if (_tollFreeDateProvider.IsTollFreeDate(date) || _tollFreeVehicleProvider.IsTollFreeVehicle(vehicle)) return 0;
-
         int hour = date.Hour;
         int minute = date.Minute;
 
