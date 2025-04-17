@@ -30,12 +30,12 @@ public class TollCalculatorTests
     public void GivenSingleCarPass_WhenCalculated_ShouldReturnCorrectRate(int hour, int minute, int expected)
     {
         //Arrange
-        var car = new Car();
-        var sut = new TollCalculator(new NoFreeDatesProvider(), new TollFreeVehicleProvider());
+        var vehicle = new Car();
+        var sut = new TollCalculator(new NoFreeDatesProvider(), new NoFreeVehiclesProvider());
         var passageTime = TodayAt(hour, minute);
         
         //Act
-        var actual = sut.GetTollFee(car, [passageTime]);
+        var actual = sut.GetTollFee(vehicle, [passageTime]);
         
         //Assert
         Assert.Equal(expected, actual);
@@ -52,19 +52,58 @@ public class TollCalculatorTests
     public void GivenOnlyTollFreeDates_WhenCalculated_ShouldReturnCorrectRate(int hour, int minute)
     {
         //Arrange
-        var car = new Car();
-        var sut = new TollCalculator(new OnlyFreeDatesProvider(), new TollFreeVehicleProvider());
+        var vehicle = new Car();
+        var sut = new TollCalculator(new OnlyFreeDatesProvider(), new NoFreeVehiclesProvider());
         var passageTime = TodayAt(hour, minute);
         
         //Act
-        var actual = sut.GetTollFee(car, [passageTime]);
+        var actual = sut.GetTollFee(vehicle, [passageTime]);
         
         //Assert
         Assert.Equal(0, actual);
     }
 
+    [Fact]
+    public void GivenMultipleCarPasses_WhenCalculated_ShouldMaxOutRateAt60()
+    {
+        //Arrange
+        var vehicle = new Car();
+        var sut = new TollCalculator(new NoFreeDatesProvider(), new NoFreeVehiclesProvider());
+        DateTime[] passageTimes = [TodayAt(6, 30), TodayAt(7, 50), TodayAt(15, 0), TodayAt(16, 10), TodayAt(17, 20), TodayAt(18, 25)];
+        
+        //Act
+        var actual = sut.GetTollFee(vehicle, passageTimes);
+        
+        //Assert
+        Assert.Equal(60, actual);
+    }
+    
+    [Fact]
+    public void GivenMultipleCarPasses_WhenWithin60Minutes_ShouldOnlyPayHighestSingleFee()
+    {
+        //Arrange
+        var vehicle = new Car();
+        var sut = new TollCalculator(new NoFreeDatesProvider(), new NoFreeVehiclesProvider());
+        DateTime[] passageTimes = [TodayAt(6, 29), TodayAt(6, 50), TodayAt(7, 19)];
+        
+        //Act
+        var actual = sut.GetTollFee(vehicle, passageTimes);
+        
+        //Assert
+        Assert.Equal(18, actual);
+    }
+
     private static DateTime TodayAt(int hour, int minute) => new (DateTime.Today.Year, DateTime.Today.Month, DateTime.Today.Day, hour, minute, 0);
 
+    #region Custom ITollFreeVehicleProvider implementaions
+    
+    private class NoFreeVehiclesProvider : ITollFreeVehicleProvider
+    {
+        public bool IsTollFreeVehicle(IVehicle vehicle) => false;
+    }
+    
+    #endregion    
+    
     #region Custom ITollFreeDateProvider implementaions
     
     private class NoFreeDatesProvider : ITollFreeDateProvider
